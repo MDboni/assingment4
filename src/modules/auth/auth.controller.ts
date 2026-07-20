@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import httpStatus from "http-status";
+import { StatusCodes as httpStatus } from "http-status-codes";
+import config from "../../config";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { authService } from "./auth.service";
@@ -18,17 +19,20 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
 const loginUser = catchAsync(async (req: Request, res: Response) => {
     const result = await authService.loginUser(req.body);
 
-    res.cookie("accessToken", result.accessToken, {
+    // production HTTPS-এ secure cookie, local-এ নয়
+    const cookieOptions = {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: config.is_production,
+        sameSite: config.is_production ? ("none" as const) : ("lax" as const),
+    };
+
+    res.cookie("accessToken", result.accessToken, {
+        ...cookieOptions,
         maxAge: 1000 * 60 * 60 * 24, // 1 day
     });
 
     res.cookie("refreshToken", result.refreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        ...cookieOptions,
         maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     });
 

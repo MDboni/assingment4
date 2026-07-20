@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import httpStatus from "http-status";
+import { StatusCodes as httpStatus } from "http-status-codes";
 import config from "../config";
 import { AppError } from "../errors/AppError";
 import { prisma } from "../lib/prisma";

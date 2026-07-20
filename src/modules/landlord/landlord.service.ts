@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import httpStatus from "http-status";
+import { StatusCodes as httpStatus } from "http-status-codes";
 import slugify from "slugify";
 import { AppError } from "../../errors/AppError";
 import { prisma } from "../../lib/prisma";

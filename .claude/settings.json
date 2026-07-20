@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "Bash(PORT=5050 node dist/src/server.js)",
+      "Bash(curl -s http://localhost:5050/api/categories)",
+      "Bash(curl -s \"http://localhost:5050/api/properties?limit=1\")",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>console.log\\('props total:',JSON.parse\\(d\\).meta.total\\)\\)\")",
+      "Bash(pkill -f \"dist/src/server.js\")",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const o=JSON.parse\\(d\\);console.log\\('status:',o.statusCode,'| total:',o.meta.total\\)}\\)\")"
+    ]
+  }
+}

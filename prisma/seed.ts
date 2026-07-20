@@ -12,15 +12,17 @@ const CATEGORIES = [
 
 async function main() {
     const password = await bcrypt.hash("Admin@12345", 12);
+    const adminPassword = await bcrypt.hash("admin123", 12);
 
-    // Admin (public registration দিয়ে ADMIN বানানো যায় না, তাই seed থেকে)
+    // Admin (public registration দিয়ে ADMIN বানানো যায় না, তাই seed থেকে)।
+    // seed আবার চালালে admin password রিসেট হয়ে যাবে।
     await prisma.user.upsert({
         where: { email: "admin@rentnest.com" },
-        update: {},
+        update: { password: adminPassword, status: "ACTIVE" },
         create: {
             name: "RentNest Admin",
             email: "admin@rentnest.com",
-            password,
+            password: adminPassword,
             role: "ADMIN",
         },
     });

@@ -8,10 +8,10 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/User'
-export type * from './models/Category'
-export type * from './models/Property'
-export type * from './models/RentalRequest'
-export type * from './models/Payment'
-export type * from './models/Review'
-export type * from './commonInputTypes'
+export type * from './models/User.js'
+export type * from './models/Category.js'
+export type * from './models/Property.js'
+export type * from './models/RentalRequest.js'
+export type * from './models/Payment.js'
+export type * from './models/Review.js'
+export type * from './commonInputTypes.js'

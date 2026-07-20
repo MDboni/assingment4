@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import httpStatus from "http-status";
+import { StatusCodes as httpStatus } from "http-status-codes";
 import { ZodError } from "zod";
 import { AppError } from "../errors/AppError";
 
-type TErrorSource = { path: string; message: string };
+type TErrorDetail = { path: string; message: string };
 
 export const globalErrorHandler = (
     err: unknown,
@@ -13,12 +13,12 @@ export const globalErrorHandler = (
 ) => {
     let statusCode: number = httpStatus.INTERNAL_SERVER_ERROR;
     let message = "Something went wrong";
-    let errorSources: TErrorSource[] = [];
+    let errorDetails: TErrorDetail[] = [];
 
     if (err instanceof ZodError) {
         statusCode = httpStatus.BAD_REQUEST;
         message = "Validation failed";
-        errorSources = err.issues.map((issue) => ({
+        errorDetails = err.issues.map((issue) => ({
             path: issue.path.join("."),
             message: issue.message,
         }));
@@ -57,6 +57,6 @@ export const globalErrorHandler = (
         success: false,
         statusCode,
         message,
-        errorSources,
+        errorDetails,
     });
 };

@@ -4,8 +4,10 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "./generated/prisma"
+  provider     = "prisma-client"
+  output       = "./generated/prisma"
+  // tsc CommonJS-এ build করে, তাই client-ও CJS ফরম্যাটে দরকার
+  moduleFormat = "cjs"
 }
 
 datasource db {

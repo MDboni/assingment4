@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import httpStatus from "http-status";
+import { StatusCodes as httpStatus } from "http-status-codes";
 import Stripe from "stripe";
 import config from "../../config";
 import { AppError } from "../../errors/AppError";

@@ -1,4 +1,4 @@
-import httpStatus from "http-status";
+import { StatusCodes as httpStatus } from "http-status-codes";
 import { AppError } from "../../errors/AppError";
 import { prisma } from "../../lib/prisma";
 import { CreateReviewPayload } from "./review.interface";
