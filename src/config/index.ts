@@ -15,5 +15,8 @@ export default {
     jwt_refresh_expires_in : process.env.JWT_REFRESH_EXPIRES_IN!,
     stripe_product_price_id : process.env.STRIPE_PRODUCT_PRICE_ID!,
     stripe_secret_key : process.env.STRIPE_SECRET_KEY!,
-    stripe_webhook_secret : process.env.STRIPE_WEBHOOK_SECRET!
+    stripe_webhook_secret : process.env.STRIPE_WEBHOOK_SECRET!,
+    stripe_success_url : process.env.STRIPE_SUCCESS_URL || "http://localhost:5000/payment/success",
+    stripe_cancel_url : process.env.STRIPE_CANCEL_URL || "http://localhost:5000/payment/cancel",
+    payment_currency : process.env.PAYMENT_CURRENCY || "USD"
 }

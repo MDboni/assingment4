@@ -9,6 +9,7 @@ import { categoryRoute } from './modules/category/category.routes';
 import { propertyRoute } from './modules/property/property.routes';
 import { landlordRoute } from './modules/landlord/landloard.route';
 import { rentalRoute } from './modules/rental/rental.route';
+import { paymentRoute } from './modules/payment/payment.route';
 
 
 
@@ -19,7 +20,9 @@ app.use(cors({
     origin : config.app_url,
     credentials : true,
 }))
-app.use("/api/v1/subscription/webhook", express.raw({ type: 'application/json' }))
+// Stripe webhook-এ signature verify করতে raw body লাগে,
+// তাই express.json()-এর আগেই এটা বসাতে হবে
+app.use("/api/payments/confirm", express.raw({ type: 'application/json' }))
 
 app.use(express.json());
 app.use(express.urlencoded({ extended : true }));
@@ -53,6 +56,7 @@ app.use('/api/categories', categoryRoute);
 app.use('/api/properties', propertyRoute);
 app.use('/api/landlord', landlordRoute);
 app.use('/api/rentals', rentalRoute);
+app.use('/api/payments', paymentRoute);
 
 
 // 404 handler for unmatched routes
