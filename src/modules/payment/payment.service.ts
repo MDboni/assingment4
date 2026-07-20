@@ -170,30 +170,63 @@ const markPaymentFailed = async (paymentId: string, failedStatus: "FAILED" | "CA
     });
 };
 
-// Stripe webhook — signature verify করে তবেই database update
-const handleStripeWebhook = async (rawBody: Buffer, signature?: string) => {
-    if (!signature) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Missing stripe-signature header");
+// Webhook event যাচাই করার দুটো পথ।
+//
+// ১. স্বাভাবিক (local / যেকোনো সাধারণ সার্ভার): raw body + stripe-signature দিয়ে verify।
+// ২. Fallback (Vercel-এর মতো serverless, যেখানে platform body আগেই parse করে ফেলে বলে
+//    raw byte পাওয়া যায় না): event id নিয়ে সরাসরি Stripe API থেকে event টা fetch করা হয়।
+//    Stripe নিজে উত্তর দেয় বলে জাল event এখানে টিকবে না।
+const verifyWebhookEvent = async (
+    rawBody: Buffer | Record<string, unknown> | undefined,
+    signature?: string
+): Promise<Stripe.Event> => {
+    if (Buffer.isBuffer(rawBody) && signature) {
+        try {
+            return stripe.webhooks.constructEvent(
+                rawBody,
+                signature,
+                config.stripe_webhook_secret
+            );
+        } catch {
+            throw new AppError(httpStatus.BAD_REQUEST, "Invalid webhook signature");
+        }
     }
 
-    let event: Stripe.Event;
+    const parsed = Buffer.isBuffer(rawBody)
+        ? (JSON.parse(rawBody.toString("utf8")) as { id?: string })
+        : (rawBody as { id?: string } | undefined);
+
+    if (!parsed?.id) {
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            "Missing stripe-signature header or webhook event id"
+        );
+    }
 
     try {
-        event = stripe.webhooks.constructEvent(
-            rawBody,
-            signature,
-            config.stripe_webhook_secret
-        );
+        return await stripe.events.retrieve(parsed.id);
     } catch {
-        throw new AppError(httpStatus.BAD_REQUEST, "Invalid webhook signature");
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            "Webhook event could not be verified with Stripe"
+        );
     }
+};
+
+// Stripe webhook — যাচাই হওয়ার পরেই database update
+const handleStripeWebhook = async (
+    rawBody: Buffer | Record<string, unknown> | undefined,
+    signature?: string
+) => {
+    const event = await verifyWebhookEvent(rawBody, signature);
 
     switch (event.type) {
         case "checkout.session.completed": {
             const session = event.data.object;
             const paymentId = session.metadata?.paymentId;
 
-            if (paymentId) {
+            // Stripe নিজে "paid" না বললে database ছোঁয়া হবে না
+            if (paymentId && session.payment_status === "paid") {
                 await markPaymentCompleted(
                     paymentId,
                     session.payment_intent ? String(session.payment_intent) : undefined,

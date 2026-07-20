@@ -2,11 +2,11 @@
 
 **Find & List Rental Properties with Ease** — a rental property marketplace REST API.
 
-Landlords list properties and decide on rental requests, tenants browse listings, request rentals, pay with Stripe and leave reviews, and admins moderate the whole platform.
+Landlords list properties and decide on rental requests. Tenants browse listings, submit rental requests, pay with Stripe and leave reviews. Admins moderate the entire platform.
 
 ---
 
-## 🔗 Links
+## 🔗 Submission Links
 
 | Item | Link |
 |---|---|
@@ -22,14 +22,14 @@ Email    : admin@rentnest.com
 Password : admin123
 ```
 
-Other seeded demo accounts (same password `Admin@12345`):
+Other seeded demo accounts (password `Admin@12345`):
 
 | Role | Email |
 |---|---|
 | LANDLORD | demo.landlord@rentnest.com |
 | TENANT | demo.tenant@rentnest.com |
 
-> ADMIN account public registration দিয়ে বানানো যায় না — শুধু seed script থেকে তৈরি হয়।
+> The ADMIN account cannot be created through public registration — it is created only by the seed script.
 
 ---
 
@@ -53,20 +53,20 @@ Other seeded demo accounts (same password `Admin@12345`):
 ## 🚀 Local Setup
 
 ```bash
-# 1. clone & install
+# 1. Clone and install
 git clone https://github.com/MDboni/assingment4.git
 cd assingment4
 npm install
 
-# 2. environment
-cp .env.example .env      # তারপর নিজের value গুলো বসাও
+# 2. Environment
+cp .env.example .env      # then fill in your own values
 
-# 3. database
-npx prisma migrate deploy   # অথবা dev-এ: npx prisma migrate dev
+# 3. Database
+npx prisma migrate deploy   # for development: npx prisma migrate dev
 npx prisma generate
 npm run seed                # admin, demo users, categories, sample properties
 
-# 4. run
+# 4. Run
 npm run dev                 # http://localhost:5000
 ```
 
@@ -79,48 +79,48 @@ npm start
 
 ### Scripts
 
-| Command | কাজ |
+| Command | Description |
 |---|---|
-| `npm run dev` | tsx watch দিয়ে development server |
-| `npm run build` | TypeScript → `dist/` |
-| `npm start` | compiled server চালায় |
-| `npm run type-check` | শুধু টাইপ যাচাই |
-| `npm run seed` | demo data ঢোকায় |
-| `npm run prisma:migrate` | নতুন migration |
-| `npm run prisma:deploy` | production-এ migration চালায় |
-| `npm run prisma:studio` | Prisma Studio |
+| `npm run dev` | Development server with tsx watch |
+| `npm run build` | Compile TypeScript into `dist/` |
+| `npm start` | Run the compiled server |
+| `npm run type-check` | Type checking only |
+| `npm run seed` | Insert demo data |
+| `npm run prisma:migrate` | Create a new migration |
+| `npm run prisma:deploy` | Apply migrations in production |
+| `npm run prisma:studio` | Open Prisma Studio |
 
 ---
 
 ## 🔐 Environment Variables
 
-`.env.example` দেখো। সংক্ষেপে:
+See `.env.example` for the full list.
 
-| Variable | কাজ |
+| Variable | Description |
 |---|---|
 | `NODE_ENV` | `development` / `production` |
-| `PORT` | server port (default 5000) |
+| `PORT` | Server port (default 5000) |
 | `APP_URL` | CORS origin (frontend URL) |
 | `DATABASE_URL` | PostgreSQL connection string |
-| `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` | token signing |
-| `JWT_ACCESS_EXPIRES_IN` / `JWT_REFRESH_EXPIRES_IN` | মেয়াদ (`1d`, `7d`) |
-| `BCRYPT_SALT_ROUNDS` | password hashing (12) |
+| `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` | Token signing secrets |
+| `JWT_ACCESS_EXPIRES_IN` / `JWT_REFRESH_EXPIRES_IN` | Token lifetime (`1d`, `7d`) |
+| `BCRYPT_SALT_ROUNDS` | Password hashing rounds (12) |
 | `STRIPE_SECRET_KEY` | Stripe secret key |
-| `STRIPE_WEBHOOK_SECRET` | webhook signature verify |
-| `STRIPE_SUCCESS_URL` / `STRIPE_CANCEL_URL` | checkout redirect |
+| `STRIPE_WEBHOOK_SECRET` | Webhook signature verification |
+| `STRIPE_SUCCESS_URL` / `STRIPE_CANCEL_URL` | Checkout redirect URLs |
 | `PAYMENT_CURRENCY` | Stripe currency (default `USD`) |
 
 ---
 
-## 👥 Roles
+## 👥 Roles & Permissions
 
-| Role | পারে |
+| Role | Permissions |
 |---|---|
-| **TENANT** | listing দেখা, rental request পাঠানো/বাতিল করা, payment, review |
-| **LANDLORD** | property CRUD, নিজের property-র request approve/reject/complete |
-| **ADMIN** | সব user/property/rental দেখা, user ban/unban, category management |
+| **TENANT** | Browse listings, submit and cancel rental requests, make payments, leave reviews, manage profile |
+| **LANDLORD** | Create/update/delete own listings, approve/reject/complete requests on own properties |
+| **ADMIN** | View all users, properties and rentals, ban/unban users, manage categories |
 
-Registration-এ user নিজের role বেছে নেয় — তবে **ADMIN বেছে নেওয়া যায় না**।
+Users select their role during registration — but **ADMIN cannot be selected**.
 
 ---
 
@@ -132,80 +132,85 @@ Base URL: `http://localhost:5000`
 | Method | Endpoint | Access | Description |
 |---|---|---|---|
 | POST | `/api/auth/register` | Public | Register (TENANT / LANDLORD) |
-| POST | `/api/auth/login` | Public | Login, JWT + cookie |
-| GET | `/api/auth/me` | Auth | Current user |
-| POST | `/api/auth/logout` | Public | Cookie clear |
+| POST | `/api/auth/login` | Public | Login, returns JWT and sets cookie |
+| GET | `/api/auth/me` | Auth | Current authenticated user |
+| POST | `/api/auth/logout` | Public | Clear auth cookies |
 
 ### User Profile
 | Method | Endpoint | Access | Description |
 |---|---|---|---|
-| GET | `/api/users/me` | Auth | নিজের profile + activity count |
-| PATCH | `/api/users/me` | Auth | name / phone / bio update |
-| PATCH | `/api/users/me/password` | Auth | password change |
+| GET | `/api/users/me` | Auth | Own profile with activity counts |
+| PATCH | `/api/users/me` | Auth | Update name / phone / bio |
+| PATCH | `/api/users/me/password` | Auth | Change password |
 
 ### Properties (Public)
 | Method | Endpoint | Access | Description |
 |---|---|---|---|
 | GET | `/api/properties` | Public | Filter, search, sort, pagination |
-| GET | `/api/properties/:id` | Public | Details + reviews + rating summary |
+| GET | `/api/properties/:id` | Public | Details with reviews and rating summary |
 | GET | `/api/categories` | Public | Active categories |
 
-`/api/properties` query: `search`, `city`, `area`, `categoryId`, `categorySlug`, `bedrooms`, `bathrooms`, `minPrice`, `maxPrice`, `amenity`, `sortBy` (`monthlyRent`/`createdAt`/`bedrooms`/`sizeSqft`/`title`), `sortOrder`, `page`, `limit`
+**Query parameters for `/api/properties`:** `search`, `city`, `area`, `categoryId`, `categorySlug`, `bedrooms`, `bathrooms`, `minPrice`, `maxPrice`, `amenity`, `sortBy` (`monthlyRent` / `createdAt` / `bedrooms` / `sizeSqft` / `title`), `sortOrder`, `page`, `limit`
 
-### Landlord
+Example:
+```
+GET /api/properties?city=Dhaka&minPrice=10000&maxPrice=50000&sortBy=monthlyRent&sortOrder=asc&page=1&limit=10
+```
+
+### Landlord Management
 | Method | Endpoint | Access | Description |
 |---|---|---|---|
-| POST | `/api/landlord/properties` | LANDLORD | নতুন listing |
-| PUT | `/api/landlord/properties/:id` | LANDLORD | listing update |
-| DELETE | `/api/landlord/properties/:id` | LANDLORD | delete / archive |
-| GET | `/api/landlord/requests` | LANDLORD | নিজের property-র request |
-| PATCH | `/api/landlord/requests/:id` | LANDLORD | approve / reject |
-| PATCH | `/api/landlord/requests/:id/complete` | LANDLORD | ACTIVE → COMPLETED |
+| POST | `/api/landlord/properties` | LANDLORD | Create a new listing |
+| PUT | `/api/landlord/properties/:id` | LANDLORD | Update own listing |
+| DELETE | `/api/landlord/properties/:id` | LANDLORD | Delete (or archive) own listing |
+| GET | `/api/landlord/requests` | LANDLORD | Rental requests on own properties |
+| PATCH | `/api/landlord/requests/:id` | LANDLORD | Approve or reject a request |
+| PATCH | `/api/landlord/requests/:id/complete` | LANDLORD | Mark an ACTIVE rental as COMPLETED |
 
 ### Rental Requests
 | Method | Endpoint | Access | Description |
 |---|---|---|---|
-| POST | `/api/rentals` | TENANT | request পাঠানো |
-| GET | `/api/rentals` | TENANT | নিজের history |
-| GET | `/api/rentals/:id` | Related / ADMIN | details |
-| PATCH | `/api/rentals/:id/cancel` | TENANT | PENDING/APPROVED cancel |
+| POST | `/api/rentals` | TENANT | Submit a rental request |
+| GET | `/api/rentals` | TENANT | Own rental history |
+| GET | `/api/rentals/:id` | Related / ADMIN | Rental request details |
+| PATCH | `/api/rentals/:id/cancel` | TENANT | Cancel a PENDING or APPROVED request |
 
 ### Payments (Stripe)
 | Method | Endpoint | Access | Description |
 |---|---|---|---|
-| POST | `/api/payments/create` | TENANT | Checkout session তৈরি |
-| POST | `/api/payments/confirm` | Stripe webhook | signature verify + status update |
-| GET | `/api/payments` | Auth | payment history (ADMIN = সব) |
-| GET | `/api/payments/:id` | Related / ADMIN | payment details |
+| POST | `/api/payments/create` | TENANT | Create a Stripe Checkout session |
+| POST | `/api/payments/confirm` | Stripe webhook | Verify event and update payment status |
+| GET | `/api/payments` | Auth | Payment history (ADMIN sees all) |
+| GET | `/api/payments/:id` | Related / ADMIN | Payment details |
 
 ### Reviews
 | Method | Endpoint | Access | Description |
 |---|---|---|---|
-| POST | `/api/reviews` | TENANT | COMPLETED rental-এর review |
+| POST | `/api/reviews` | TENANT | Create a review for a COMPLETED rental |
 
 ### Admin
 | Method | Endpoint | Access | Description |
 |---|---|---|---|
-| GET | `/api/admin/users` | ADMIN | সব user (filter/search) |
-| PATCH | `/api/admin/users/:id` | ADMIN | ban / unban |
-| GET | `/api/admin/properties` | ADMIN | সব property (সব status) |
-| GET | `/api/admin/rentals` | ADMIN | সব rental request |
-| GET | `/api/admin/categories` | ADMIN | inactive সহ সব category |
-| POST | `/api/admin/categories` | ADMIN | নতুন category |
-| PATCH | `/api/admin/categories/:id` | ADMIN | category update |
-| DELETE | `/api/admin/categories/:id` | ADMIN | delete / deactivate |
+| GET | `/api/admin/users` | ADMIN | All users (search and filter) |
+| PATCH | `/api/admin/users/:id` | ADMIN | Ban / unban a user |
+| GET | `/api/admin/properties` | ADMIN | All properties (every status) |
+| GET | `/api/admin/rentals` | ADMIN | All rental requests |
+| GET | `/api/admin/categories` | ADMIN | All categories including inactive |
+| POST | `/api/admin/categories` | ADMIN | Create a category |
+| PATCH | `/api/admin/categories/:id` | ADMIN | Update a category |
+| DELETE | `/api/admin/categories/:id` | ADMIN | Delete or deactivate a category |
 
 ### Utility
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/health` | DB সহ health check |
-| GET | `/payment/success`, `/payment/cancel` | Stripe redirect landing |
+| GET | `/health` | Health check including database |
+| GET | `/payment/success`, `/payment/cancel` | Stripe redirect landing pages |
 
 ---
 
 ## 📦 Response Format
 
-সফল:
+Success:
 
 ```json
 {
@@ -217,7 +222,7 @@ Base URL: `http://localhost:5000`
 }
 ```
 
-ব্যর্থ:
+Error:
 
 ```json
 {
@@ -230,63 +235,70 @@ Base URL: `http://localhost:5000`
 }
 ```
 
-| Code | কখন |
+| Code | When |
 |---|---|
-| 400 | validation / invalid state transition |
-| 401 | token নেই বা ভুল credentials |
-| 403 | role বা ownership মেলেনি |
-| 404 | resource নেই |
-| 409 | duplicate (email, request, review) |
-| 429 | rate limit |
-| 500 | unexpected |
+| 400 | Validation failure or invalid state transition |
+| 401 | Missing/invalid token, wrong credentials |
+| 403 | Role or ownership check failed |
+| 404 | Resource not found |
+| 409 | Duplicate (email, rental request, review) |
+| 429 | Rate limit exceeded |
+| 500 | Unexpected server error |
 
 ---
 
 ## 💳 Payment Testing (Stripe)
 
-1. আলাদা টার্মিনালে webhook forward করো:
+1. Forward webhooks in a separate terminal:
 
    ```bash
    stripe listen --forward-to localhost:5000/api/payments/confirm
    ```
 
-   এটা যে `whsec_...` দেবে সেটা `.env`-এর `STRIPE_WEBHOOK_SECRET` এ বসাও।
+   Copy the `whsec_...` value it prints into `STRIPE_WEBHOOK_SECRET` in `.env`.
 
-2. Flow:
+2. Full flow:
 
-   | ধাপ | Request |
+   | Step | Request |
    |---|---|
    | 1 | Tenant login → `POST /api/rentals` |
    | 2 | Landlord login → `PATCH /api/landlord/requests/:id` → `{"status":"APPROVED"}` |
-   | 3 | Tenant login → `POST /api/payments/create` → `checkoutUrl` |
-   | 4 | ব্রাউজারে checkoutUrl → test card `4242 4242 4242 4242`, যেকোনো future expiry, যেকোনো CVC |
-   | 5 | Webhook আসবে → Payment `COMPLETED`, Rental `ACTIVE`, Property `RENTED` |
+   | 3 | Tenant login → `POST /api/payments/create` → returns `checkoutUrl` |
+   | 4 | Open `checkoutUrl` in a browser → test card `4242 4242 4242 4242`, any future expiry, any CVC |
+   | 5 | Webhook fires → Payment `COMPLETED`, Rental `ACTIVE`, Property `RENTED` |
    | 6 | Landlord → `PATCH /api/landlord/requests/:id/complete` → `COMPLETED` |
    | 7 | Tenant → `POST /api/reviews` |
 
-**নিরাপত্তা:** Database কখনো success URL দেখে update হয় না — শুধু signed webhook থেকেই হয়। Webhook duplicate event পাঠালে handler idempotent, দুইবার কাজ করে না।
+### Webhook verification
 
-**Currency:** Stripe BDT সাপোর্ট করে না, তাই demo-তে amount `USD` হিসেবে পাঠানো হয় (`PAYMENT_CURRENCY` দিয়ে বদলানো যায়)।
+The database is never updated from the success URL — only from a verified webhook event. A session is marked paid only when Stripe reports `payment_status: "paid"`, and the handler is idempotent so duplicate deliveries are safe.
+
+Events are verified in one of two ways:
+
+1. **Signature verification** (default) — raw request body plus the `stripe-signature` header, checked against `STRIPE_WEBHOOK_SECRET`.
+2. **Stripe API verification** (fallback) — serverless platforms such as Vercel parse the request body before it reaches Express, so the exact raw bytes are not available. In that case the event id is read from the payload and the event is fetched directly from the Stripe API. A forged event is rejected because Stripe does not return it.
+
+**Currency:** Stripe does not support BDT, so amounts are sent as `USD` in this demo (configurable via `PAYMENT_CURRENCY`).
 
 ---
 
 ## 🗄️ Database Schema
 
-৬টা model — `User`, `Category`, `Property`, `RentalRequest`, `Payment`, `Review`।
+Six models — `User`, `Category`, `Property`, `RentalRequest`, `Payment`, `Review`.
 
-সম্পর্ক:
-- একজন LANDLORD → অনেক Property
-- একজন TENANT → অনেক RentalRequest
-- একটা Category → অনেক Property
-- একটা Property → অনেক RentalRequest ও Review
-- একটা RentalRequest → এক বা একাধিক Payment, সর্বোচ্চ একটা Review
+Relations:
+- One LANDLORD → many Properties
+- One TENANT → many RentalRequests
+- One Category → many Properties
+- One Property → many RentalRequests and Reviews
+- One RentalRequest → one or more Payments, at most one Review
 
 ### Rental status flow
 
 ```
 PENDING ──approve──> APPROVED ──payment──> PAYMENT_PENDING ──webhook──> ACTIVE ──> COMPLETED
    │                     │                                                            │
-   ├──reject──> REJECTED │                                                       review দেওয়া যায়
+   ├──reject──> REJECTED │                                                    review allowed here
    └──cancel──> CANCELLED <──cancel──┘
 ```
 
@@ -294,37 +306,37 @@ PENDING ──approve──> APPROVED ──payment──> PAYMENT_PENDING ─�
 
 ## ✅ Business Rules
 
-- Email unique এবং lowercase-এ সংরক্ষিত; password bcrypt দিয়ে hash; response-এ password কখনো যায় না
-- ADMIN public registration বন্ধ
-- BANNED user login বা protected route access করতে পারে না
-- Landlord শুধু নিজের property modify করতে পারে; `landlordId` সবসময় token থেকে নেওয়া হয়
-- Public property list-এ শুধু `AVAILABLE` property আসে
-- Tenant নিজের property ভাড়া নিতে পারে না; একই property-তে একাধিক চলমান request নয়
-- শুধু `PENDING` request approve/reject করা যায়
-- `quotedAmount` ও payment amount সবসময় database থেকে আসে, client থেকে নয়
-- শুধু `APPROVED` rental-এর জন্য payment করা যায়; একবার paid হলে আবার নয়
-- Review শুধু নিজের `COMPLETED` rental-এ, প্রতি rental-এ একটাই, rating 1-5
-- Admin নিজেকে ban করতে পারে না, অন্য admin-কেও নয়
+- Emails are unique and stored lowercase; passwords are bcrypt hashed and never returned in responses
+- ADMIN registration through the public endpoint is disabled
+- BANNED users cannot log in or access protected routes
+- Landlords can only modify their own properties; `landlordId` always comes from the token, never the request body
+- The public property list only returns `AVAILABLE` properties
+- Tenants cannot rent their own property, and cannot have two ongoing requests on the same property
+- Only `PENDING` requests can be approved or rejected
+- `quotedAmount` and payment amounts always come from the database, never from the client
+- Only `APPROVED` rentals can be paid, and only once
+- Reviews require a `COMPLETED` rental owned by the tenant; one review per rental, rating 1–5
+- Admins cannot ban themselves or other admins
 
 ---
 
 ## ☁️ Deployment (Vercel)
 
-1. GitHub-এ push করো
-2. [vercel.com](https://vercel.com) → **Add New Project** → repo import
-3. **Environment Variables**-এ `.env.example`-এর সব key বসাও (`NODE_ENV=production`, production `STRIPE_WEBHOOK_SECRET`)
+1. Push to GitHub
+2. Go to [vercel.com](https://vercel.com) → **Add New Project** → import the repository
+3. Add every key from `.env.example` under **Environment Variables** (`NODE_ENV=production` and the production `STRIPE_WEBHOOK_SECRET`)
 4. Deploy
-5. Stripe Dashboard → Developers → Webhooks → endpoint যোগ করো:
-   `https://<your-app>.vercel.app/api/payments/confirm` — event: `checkout.session.completed`
-6. সেখানকার `whsec_...` টা Vercel env-এ বসিয়ে redeploy করো
+5. In Stripe Dashboard → Developers → Webhooks, add the endpoint:
+   `https://<your-app>.vercel.app/api/payments/confirm` with event `checkout.session.completed`
+6. Put the resulting `whsec_...` into the Vercel environment variables and redeploy
 
-`vercel.json` আর `api/index.ts` রিপোতেই আছে — Vercel Express app টাকে serverless function হিসেবে চালায়।
+`vercel.json` and `api/index.ts` are already in the repo — Vercel runs the Express app as a serverless function.
 
 ---
 
 ## ⚠️ Known Limitations
 
-- SSLCommerz যোগ করা হয়নি — assignment-এ Stripe **অথবা** SSLCommerz চাওয়া হয়েছে, Stripe বেছে নেওয়া হয়েছে
-- Image upload endpoint নেই — property image URL হিসেবে পাঠাতে হয়
-- Refresh token cookie-তে দেওয়া হয় কিন্তু আলাদা refresh endpoint নেই
-- Serverless (Vercel) হওয়ায় প্রথম request-এ সামান্য cold start delay হতে পারে
+- SSLCommerz is not integrated — the assignment allows Stripe **or** SSLCommerz, and Stripe was chosen
+- No image upload endpoint — property images are provided as URLs
+- A refresh token cookie is issued, but there is no separate refresh endpoint yet
+- Being serverless, the first request after idle may have a short cold start delay

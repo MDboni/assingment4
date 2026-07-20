@@ -7,7 +7,13 @@
       "Bash(curl -s \"http://localhost:5050/api/properties?limit=1\")",
       "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>console.log\\('props total:',JSON.parse\\(d\\).meta.total\\)\\)\")",
       "Bash(pkill -f \"dist/src/server.js\")",
-      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const o=JSON.parse\\(d\\);console.log\\('status:',o.statusCode,'| total:',o.meta.total\\)}\\)\")"
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const o=JSON.parse\\(d\\);console.log\\('status:',o.statusCode,'| total:',o.meta.total\\)}\\)\")",
+      "Bash(node -e \"const p=require\\('./package.json'\\);console.log\\('engines:',JSON.stringify\\(p.engines||null\\)\\)\")",
+      "Bash(curl -s -o /dev/null -w \"server on 5060: %{http_code}\\\\n\" http://localhost:5060/health)",
+      "Bash(PORT=5061 node dist/src/server.js)",
+      "Bash(curl -s -o /dev/null -w \"5061: %{http_code}\\\\n\" http://127.0.0.1:5061/health)",
+      "Bash(git add *)",
+      "Bash(git commit -q -m 'feat: verify Stripe webhook via API fallback for serverless and finalize docs *)"
     ]
   }
 }

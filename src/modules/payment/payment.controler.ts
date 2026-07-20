@@ -16,10 +16,11 @@ const createPayment = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-// Stripe webhook — এখানে req.body raw Buffer (app.ts-এ express.raw বসানো আছে)
+// Stripe webhook — local-এ req.body raw Buffer (app.ts-এ express.raw বসানো),
+// serverless platform আগেই parse করে ফেললে object আসে; service দুটোই সামলায়
 const confirmPayment = catchAsync(async (req: Request, res: Response) => {
     const result = await paymentService.handleStripeWebhook(
-        req.body as Buffer,
+        req.body as Buffer | Record<string, unknown> | undefined,
         req.headers["stripe-signature"] as string | undefined
     );
 
