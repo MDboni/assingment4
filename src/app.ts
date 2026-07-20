@@ -7,6 +7,7 @@ import { globalErrorHandler } from './middleware/globalErrorHandler';
 import { notFound } from './middleware/notFound';
 import { categoryRoute } from './modules/category/category.routes';
 import { propertyRoute } from './modules/property/property.routes';
+import { landlordRoute } from './modules/landlord/landloard.route';
 
 
 
@@ -45,14 +46,12 @@ app.get('/', (req: Request, res: Response) => {
 // });
 
 
-// app.use('/api/v1/users', userRoute);
+
 app.use('/api/auth', authRoute);
 app.use('/api/categories', categoryRoute);
 app.use('/api/properties', propertyRoute);
-// app.use('/api/v1/posts', postRouter);
-// app.use('/api/v1/comments', commentRouter); // Assuming you have a commentRouter for comments
-// app.use('/api/v1/subscription', subscriptionRouter); // Assuming you have a subscriptionRouter for subscriptions
-// app.use('/api/v1/premium', premiumRoutes);
+app.use('/api/landlord', landlordRoute);
+
 
 // 404 handler for unmatched routes
 app.use(notFound);
