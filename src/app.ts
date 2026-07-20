@@ -3,6 +3,8 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import config from './config';
 import { authRoute } from './modules/auth/auth.routes';
+import { globalErrorHandler } from './middleware/globalErrorHandler';
+import { notFound } from './middleware/notFound';
 
 
 
@@ -47,11 +49,12 @@ app.use('/api/auth', authRoute);
 // app.use('/api/v1/comments', commentRouter); // Assuming you have a commentRouter for comments
 // app.use('/api/v1/subscription', subscriptionRouter); // Assuming you have a subscriptionRouter for subscriptions
 // app.use('/api/v1/premium', premiumRoutes);
-// // 404 handler for unmatched routes
-// app.use(notFound);
 
-// // Global error handler (must be the last middleware)
-// app.use(globalErrorHandler);
+// 404 handler for unmatched routes
+app.use(notFound);
+
+// Global error handler (must be the last middleware)
+app.use(globalErrorHandler);
 
 
 export default app;
