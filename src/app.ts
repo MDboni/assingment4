@@ -8,6 +8,7 @@ import { notFound } from './middleware/notFound';
 import { categoryRoute } from './modules/category/category.routes';
 import { propertyRoute } from './modules/property/property.routes';
 import { landlordRoute } from './modules/landlord/landloard.route';
+import { rentalRoute } from './modules/rental/rental.route';
 
 
 
@@ -51,6 +52,7 @@ app.use('/api/auth', authRoute);
 app.use('/api/categories', categoryRoute);
 app.use('/api/properties', propertyRoute);
 app.use('/api/landlord', landlordRoute);
+app.use('/api/rentals', rentalRoute);
 
 
 // 404 handler for unmatched routes

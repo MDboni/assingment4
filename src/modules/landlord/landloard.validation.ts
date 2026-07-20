@@ -16,7 +16,7 @@ const createPropertyValidationSchema = z.object({
         amenities: z.array(z.string()).default([]),
         images: z.array(z.url("Each image must be a valid URL")).default([]),
         availableFrom: z.iso.datetime("availableFrom must be an ISO date").optional(),
-        // RENTED landlord নিজে বসাতে পারবে না
+
         status: z.enum(["AVAILABLE", "UNAVAILABLE", "ARCHIVED"]).optional(),
     }),
 });

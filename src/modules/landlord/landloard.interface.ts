@@ -1,6 +1,5 @@
 import { RentalStatus } from "../../../prisma/generated/prisma/enums";
 
-// Landlord নিজে যেসব status সেট করতে পারে (RENTED সিস্টেম নিজে বসাবে)
 export type TLandlordPropertyStatus = "AVAILABLE" | "UNAVAILABLE" | "ARCHIVED";
 
 export interface CreatePropertyPayload {

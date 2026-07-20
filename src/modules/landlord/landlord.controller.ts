@@ -6,7 +6,6 @@ import { RentalRequestFilterQuery } from "./landloard.interface";
 import { landlordService } from "./landlord.service";
 
 const createProperty = catchAsync(async (req: Request, res: Response) => {
-    // landlordId সবসময় token থেকে, client-এর পাঠানো id বিশ্বাস করা হয় না
     const property = await landlordService.createProperty(req.user!.id, req.body);
 
     sendResponse(res, {
