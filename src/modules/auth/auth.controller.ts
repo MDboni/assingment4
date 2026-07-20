@@ -18,10 +18,18 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
 const loginUser = catchAsync(async (req: Request, res: Response) => {
     const result = await authService.loginUser(req.body);
 
+    res.cookie("accessToken", result.accessToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
+    });
+
     res.cookie("refreshToken", result.refreshToken, {
         httpOnly: true,
         secure: false,
         sameSite: "lax",
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     });
 
     sendResponse(res, {
@@ -43,8 +51,21 @@ const getMe = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const logoutUser = catchAsync(async (_req: Request, res: Response) => {
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "User logged out successfully",
+        data: null,
+    });
+});
+
 export const authController = {
     registerUser,
     loginUser,
     getMe,
+    logoutUser,
 };

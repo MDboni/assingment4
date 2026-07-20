@@ -9,7 +9,9 @@ import { UserRole } from "../../prisma/generated/prisma/enums";
 export const auth = (...roles: UserRole[]) => {
     return async (req: Request, _res: Response, next: NextFunction) => {
         try {
-            const token = req.headers.authorization?.replace("Bearer ", "");
+            const token =
+                req.cookies?.accessToken ||
+                req.headers.authorization?.replace("Bearer ", "");
 
             if (!token) {
                 throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized");
