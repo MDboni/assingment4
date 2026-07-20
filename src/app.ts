@@ -11,6 +11,7 @@ import { landlordRoute } from './modules/landlord/landloard.route';
 import { rentalRoute } from './modules/rental/rental.route';
 import { paymentRoute } from './modules/payment/payment.route';
 import { reviewRoute } from './modules/review/review.route';
+import { adminRoute } from './modules/admin/admin.route';
 
 
 
@@ -57,6 +58,7 @@ app.use('/api/landlord', landlordRoute);
 app.use('/api/rentals', rentalRoute);
 app.use('/api/payments', paymentRoute);
 app.use('/api/reviews', reviewRoute);
+app.use('/api/admin', adminRoute);
 
 
 // 404 handler for unmatched routes
