@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import config from './config';
+import { authRoute } from './modules/auth/auth.routes';
 
 
 
@@ -41,7 +42,7 @@ app.get('/', (req: Request, res: Response) => {
 
 
 // app.use('/api/v1/users', userRoute);
-// app.use('/api/v1/auth', authRoute);
+app.use('/api/auth', authRoute);
 // app.use('/api/v1/posts', postRouter);
 // app.use('/api/v1/comments', commentRouter); // Assuming you have a commentRouter for comments
 // app.use('/api/v1/subscription', subscriptionRouter); // Assuming you have a subscriptionRouter for subscriptions
