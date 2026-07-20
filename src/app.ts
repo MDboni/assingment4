@@ -20,8 +20,7 @@ app.use(cors({
     origin : config.app_url,
     credentials : true,
 }))
-// Stripe webhook-এ signature verify করতে raw body লাগে,
-// তাই express.json()-এর আগেই এটা বসাতে হবে
+
 app.use("/api/payments/confirm", express.raw({ type: 'application/json' }))
 
 app.use(express.json());
@@ -32,22 +31,21 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Hello World!');
 });
 
-// // Stripe checkout redirect landing endpoints
-// app.get('/premium', (req: Request, res: Response) => {
-//     res.send({
-//         success: req.query.success === 'true',
-//         message: req.query.success === 'true'
-//             ? 'Payment successful! You now have access to premium content.'
-//             : 'Payment not completed.',
-//     });
-// });
 
-// app.get('/payment', (_req: Request, res: Response) => {
-//     res.send({
-//         success: false,
-//         message: 'Payment was cancelled.',
-//     });
-// });
+app.get('/payment/success', (req: Request, res: Response) => {
+    res.send({
+        success: true,
+        message: 'Payment received. Your rental will be activated once Stripe confirms it.',
+        sessionId: req.query.session_id ?? null,
+    });
+});
+
+app.get('/payment/cancel', (_req: Request, res: Response) => {
+    res.send({
+        success: false,
+        message: 'Payment was cancelled.',
+    });
+});
 
 
 
