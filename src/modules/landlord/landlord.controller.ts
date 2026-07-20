@@ -77,10 +77,25 @@ const decideRentalRequest = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const completeRentalRequest = catchAsync(async (req: Request, res: Response) => {
+    const request = await landlordService.completeRentalRequest(
+        req.params.id as string,
+        req.user!.id
+    );
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Rental request completed successfully",
+        data: request,
+    });
+});
+
 export const landlordController = {
     createProperty,
     updateProperty,
     deleteProperty,
     getLandlordRequests,
     decideRentalRequest,
+    completeRentalRequest,
 };

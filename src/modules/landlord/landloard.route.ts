@@ -33,4 +33,6 @@ router.patch(
     landlordController.decideRentalRequest
 );
 
+router.patch("/requests/:id/complete", landlordController.completeRentalRequest);
+
 export const landlordRoute = router;

@@ -231,10 +231,52 @@ const decideRentalRequest = async (
     });
 };
 
+// ACTIVE rental শেষ হলে landlord COMPLETED করবে, property আবার AVAILABLE হবে
+const completeRentalRequest = async (requestId: string, landlordId: string) => {
+    return prisma.$transaction(async (tx) => {
+        const rental = await tx.rentalRequest.findUnique({ where: { id: requestId } });
+
+        if (!rental) {
+            throw new AppError(httpStatus.NOT_FOUND, "Rental request not found");
+        }
+
+        if (rental.landlordId !== landlordId) {
+            throw new AppError(
+                httpStatus.FORBIDDEN,
+                "This rental request is not for your property"
+            );
+        }
+
+        if (rental.status !== "ACTIVE") {
+            throw new AppError(
+                httpStatus.BAD_REQUEST,
+                "Only an active rental can be completed"
+            );
+        }
+
+        const completed = await tx.rentalRequest.update({
+            where: { id: rental.id },
+            data: { status: "COMPLETED", completedAt: new Date() },
+            include: {
+                property: { select: { id: true, title: true } },
+                tenant: { select: { id: true, name: true, email: true } },
+            },
+        });
+
+        await tx.property.update({
+            where: { id: rental.propertyId },
+            data: { status: "AVAILABLE" },
+        });
+
+        return formatMoney(completed, ["quotedAmount"]);
+    });
+};
+
 export const landlordService = {
     createProperty,
     updateProperty,
     deleteProperty,
     getLandlordRequests,
     decideRentalRequest,
+    completeRentalRequest,
 };
