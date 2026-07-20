@@ -15,7 +15,9 @@
       "Bash(git add *)",
       "Bash(git commit -q -m 'feat: verify Stripe webhook via API fallback for serverless and finalize docs *)",
       "Bash(git push *)",
-      "PowerShell(Get-NetTCPConnection -LocalPort 5060,5061 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }; \"test servers stopped\")"
+      "PowerShell(Get-NetTCPConnection -LocalPort 5060,5061 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }; \"test servers stopped\")",
+      "Bash(curl -s --max-time 20 https://assingment4.vercel.app/)",
+      "Bash(curl -s -I --max-time 20 https://assingment4.vercel.app/)"
     ]
   }
 }
