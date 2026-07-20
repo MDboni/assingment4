@@ -11,3 +11,181 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum UserRole {
+  TENANT
+  LANDLORD
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  BANNED
+}
+
+enum PropertyStatus {
+  AVAILABLE
+  UNAVAILABLE
+  RENTED
+  ARCHIVED
+}
+
+enum RentalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PAYMENT_PENDING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentProvider {
+  STRIPE
+  SSLCOMMERZ
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELED
+  REFUNDED
+}
+
+model User {
+  id        String     @id @default(uuid())
+  name      String
+  email     String     @unique
+  password  String
+  phone     String?
+  bio       String?
+  role      UserRole
+  status    UserStatus @default(ACTIVE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  properties      Property[]      @relation("LandlordProperties")
+  tenantRentals   RentalRequest[] @relation("TenantRentals")
+  landlordRentals RentalRequest[] @relation("LandlordRentals")
+  payments        Payment[]
+  reviews         Review[]
+
+  @@index([role, status])
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  properties Property[]
+}
+
+model Property {
+  id              String         @id @default(uuid())
+  landlordId      String
+  categoryId      String
+  title           String
+  slug            String         @unique
+  description     String?
+  address         String
+  city            String
+  area            String
+  monthlyRent     Decimal        @db.Decimal(10, 2)
+  securityDeposit Decimal        @db.Decimal(10, 2)
+  bedrooms        Int
+  bathrooms       Int
+  sizeSqft        Int
+  amenities       String[]
+  images          String[]
+  status          PropertyStatus @default(AVAILABLE)
+  availableFrom   DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  landlord       User            @relation("LandlordProperties", fields: [landlordId], references: [id], onDelete: Cascade)
+  category       Category        @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  rentalRequests RentalRequest[]
+  reviews        Review[]
+
+  @@index([landlordId])
+  @@index([categoryId, status])
+  @@index([city, monthlyRent])
+}
+
+model RentalRequest {
+  id            String       @id @default(uuid())
+  propertyId    String
+  tenantId      String
+  landlordId    String
+  moveInDate    DateTime
+  moveOutDate   DateTime?
+  message       String?
+  landloardNote String?
+  quotedAmount  Decimal      @db.Decimal(10, 2)
+  status        RentalStatus @default(PENDING)
+  approvedAt    DateTime?
+  rejectedAt    DateTime?
+  activatedAt   DateTime?
+  completedAt   DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  property Property  @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  tenant   User      @relation("TenantRentals", fields: [tenantId], references: [id], onDelete: Restrict)
+  landlord User      @relation("LandlordRentals", fields: [landlordId], references: [id], onDelete: Restrict)
+  payments Payment[]
+  reviews  Review[]
+
+  @@index([tenantId, status])
+  @@index([landlordId, status])
+  @@index([propertyId, status])
+}
+
+model Payment {
+  id                    String          @id @default(uuid())
+  rentalRequestId       String
+  tenantId              String
+  transactionId         String          @unique
+  providerTransactionId String?
+  checkoutSessionId     String?
+  paymentIntentId       String?
+  amount                Decimal         @db.Decimal(10, 2)
+  currency              String          @default("BDT")
+  method                String?
+  provider              PaymentProvider
+  status                PaymentStatus   @default(PENDING)
+  paidAt                DateTime?
+  metadata              Json?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  rentalRequest RentalRequest @relation(fields: [rentalRequestId], references: [id], onDelete: Restrict)
+  tenant        User          @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
+  @@index([rentalRequestId, status])
+  @@index([tenantId, status])
+}
+
+model Review {
+  id              String   @id @default(uuid())
+  rentalRequestId String   @unique
+  propertyId      String
+  tenantId        String
+  rating          Int
+  comment         String?
+  isVisible       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  rentalRequest RentalRequest @relation(fields: [rentalRequestId], references: [id], onDelete: Cascade)
+  property      Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  tenant        User          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId, isVisible])
+}
