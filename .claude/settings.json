@@ -18,7 +18,11 @@
       "PowerShell(Get-NetTCPConnection -LocalPort 5060,5061 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }; \"test servers stopped\")",
       "Bash(curl -s --max-time 20 https://assingment4.vercel.app/)",
       "Bash(curl -s -I --max-time 20 https://assingment4.vercel.app/)",
-      "Bash(git commit -q -m 'fix\\(vercel\\): point route destination to the actual function file *)"
+      "Bash(git commit -q -m 'fix\\(vercel\\): point route destination to the actual function file *)",
+      "PowerShell(git remote -v; Get-ChildItem -Name -Force | Where-Object { $_ -notmatch 'node_modules|^\\\\.git$' })",
+      "PowerShell(git checkout -b test-preview)",
+      "PowerShell($v = Get-Command vercel -ErrorAction SilentlyContinue; if \\($v\\) { \"vercel found: $\\($v.Source\\)\"; vercel whoami } else { \"vercel CLI not installed\" })",
+      "PowerShell(git checkout main)"
     ]
   }
 }
