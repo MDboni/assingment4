@@ -6,7 +6,7 @@ import { userValidation } from "./user.validation";
 
 const router = Router();
 
-// যেকোনো logged-in user নিজের profile দেখবে ও বদলাবে
+// 
 router.get("/me", auth(), userController.getMyProfile);
 
 router.patch(

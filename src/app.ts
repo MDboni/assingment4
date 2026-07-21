@@ -64,8 +64,7 @@ app.get('/health', async (_req: Request, res: Response) => {
 });
 
 // Stripe checkout redirect landing endpoints।
-// শুধু ব্রাউজারে দেখানোর জন্য — এখানে কোনো database update হয় না,
-// সেটা শুধু signed webhook (/api/payments/confirm) থেকেই হয়।
+
 app.get('/payment/success', (req: Request, res: Response) => {
     res.send({
         success: true,
