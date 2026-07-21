@@ -22,7 +22,11 @@
       "PowerShell(git remote -v; Get-ChildItem -Name -Force | Where-Object { $_ -notmatch 'node_modules|^\\\\.git$' })",
       "PowerShell(git checkout -b test-preview)",
       "PowerShell($v = Get-Command vercel -ErrorAction SilentlyContinue; if \\($v\\) { \"vercel found: $\\($v.Source\\)\"; vercel whoami } else { \"vercel CLI not installed\" })",
-      "PowerShell(git checkout main)"
+      "PowerShell(git checkout main)",
+      "PowerShell(\"COMMITS: \" + \\(git rev-list --count HEAD\\); \"--- EDGE ---\"; @\\(\"C:\\\\Program Files \\(x86\\)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe\",\"C:\\\\Program Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe\"\\) | ForEach-Object { if \\(Test-Path $_\\) { \"FOUND: $_\" } }; \"--- MODULES ---\"; Get-ChildItem src\\\\modules -Name)",
+      "Bash('/c/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe' --headless --disable-gpu --no-sandbox --no-pdf-header-footer --print-to-pdf=D:/L2/assingment4/RentNest-Presentation.pdf file:///C:/Users/USER/AppData/Local/Temp/claude/d--L2-assingment4/4a3a170a-3c9a-4f22-8173-0b460552463f/scratchpad/rentnest-deck.html)",
+      "Bash(echo \"--- exit:$? ---\")",
+      "Bash('/c/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe' --headless --disable-gpu --no-sandbox --window-size=1280,720 --screenshot=C:/Users/USER/AppData/Local/Temp/claude/d--L2-assingment4/4a3a170a-3c9a-4f22-8173-0b460552463f/scratchpad/slide1.png file:///C:/Users/USER/AppData/Local/Temp/claude/d--L2-assingment4/4a3a170a-3c9a-4f22-8173-0b460552463f/scratchpad/rentnest-deck.html)"
     ]
   }
 }
