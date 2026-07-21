@@ -10,7 +10,7 @@ Landlords list properties and decide on rental requests. Tenants browse listings
 
 | Item | Link |
 |---|---|
-| Live API | `https://<your-app>.vercel.app` |
+| Live API | https://assingment4-nu.vercel.app |
 | API Documentation (Postman) | `<postman published docs link>` |
 | Demo Video | `<google drive / loom link>` |
 | GitHub Repo | https://github.com/MDboni/assingment4 |
