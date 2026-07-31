@@ -9,6 +9,8 @@ import {
     CreatePropertyPayload,
     DecideRentalRequestPayload,
     RENTAL_REQUEST_SORTABLE_FIELDS,
+    LANDLORD_PROPERTY_SORTABLE_FIELDS,   
+    LandlordPropertyFilterQuery, 
     RentalRequestFilterQuery,
     UpdatePropertyPayload,
 } from "./landloard.interface";
@@ -272,8 +274,59 @@ const completeRentalRequest = async (requestId: string, landlordId: string) => {
     });
 };
 
+// Landlord-এর নিজের সব property — public list-এর মতো শুধু AVAILABLE নয়,
+// RENTED আর ARCHIVED-ও দেখাতে হবে
+const getMyProperties = async (
+    landlordId: string,
+    query: LandlordPropertyFilterQuery
+) => {
+    const { page, limit, skip, sortBy, sortOrder } = calculatePagination(
+        query,
+        LANDLORD_PROPERTY_SORTABLE_FIELDS
+    );
+
+    const where: Prisma.PropertyWhereInput = {
+        landlordId,
+        ...(query.status && { status: query.status }),
+        ...(query.search && {
+            OR: [
+                { title: { contains: query.search, mode: "insensitive" } },
+                { city: { contains: query.search, mode: "insensitive" } },
+                { area: { contains: query.search, mode: "insensitive" } },
+            ],
+        }),
+    };
+
+    const [properties, total] = await prisma.$transaction([
+        prisma.property.findMany({
+            where,
+            skip,
+            take: limit,
+            orderBy: { [sortBy]: sortOrder },
+            include: {
+                category: { select: { id: true, name: true, slug: true } },
+                _count: {
+                    select: {
+                        rentalRequests: { where: { status: "PENDING" } },
+                    },
+                },
+            },
+        }),
+        prisma.property.count({ where }),
+    ]);
+
+    const data = properties.map(({ _count, ...property }) => ({
+        ...formatMoney(property, ["monthlyRent", "securityDeposit"]),
+        pendingRequestCount: _count.rentalRequests,
+    }));
+
+    return { data, meta: { page, limit, total } };
+};
+
+
 export const landlordService = {
     createProperty,
+    getMyProperties,
     updateProperty,
     deleteProperty,
     getLandlordRequests,

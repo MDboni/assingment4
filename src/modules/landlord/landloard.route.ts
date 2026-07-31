@@ -16,6 +16,9 @@ router.post(
     landlordController.createProperty
 );
 
+
+router.get("/properties", landlordController.getMyProperties);
+
 router.put(
     "/properties/:id",
     validateRequest(landlordValidation.updatePropertyValidationSchema),

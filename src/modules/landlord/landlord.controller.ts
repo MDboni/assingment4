@@ -2,8 +2,25 @@ import { Request, Response } from "express";
 import { StatusCodes as httpStatus } from "http-status-codes";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
-import { RentalRequestFilterQuery } from "./landloard.interface";
+import { RentalRequestFilterQuery ,LandlordPropertyFilterQuery} from "./landloard.interface";
 import { landlordService } from "./landlord.service";
+
+
+const getMyProperties = catchAsync(async (req: Request, res: Response) => {
+    const result = await landlordService.getMyProperties(
+        req.user!.id,
+        req.query as LandlordPropertyFilterQuery
+    );
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Properties retrieved successfully",
+        data: result.data,
+        meta: result.meta,
+    });
+});
+
 
 const createProperty = catchAsync(async (req: Request, res: Response) => {
     const property = await landlordService.createProperty(req.user!.id, req.body);
@@ -98,4 +115,5 @@ export const landlordController = {
     getLandlordRequests,
     decideRentalRequest,
     completeRentalRequest,
+    getMyProperties,
 };

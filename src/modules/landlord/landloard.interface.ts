@@ -43,3 +43,21 @@ export const RENTAL_REQUEST_SORTABLE_FIELDS = [
     "quotedAmount",
     "status",
 ];
+
+
+// GET /api/landlord/properties -এর query
+export interface LandlordPropertyFilterQuery {
+    status?: "AVAILABLE" | "UNAVAILABLE" | "RENTED" | "ARCHIVED";
+    search?: string;
+    page?: string;
+    limit?: string;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+}
+
+export const LANDLORD_PROPERTY_SORTABLE_FIELDS = [
+    "createdAt",
+    "monthlyRent",
+    "title",
+    "status",
+];
